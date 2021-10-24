@@ -1,0 +1,73 @@
+                      Mini-projet 1 : solveur DPLL récursif
+                             fichier RENDU
+                       (à remplir obligatoirement)
+
+**Un mini-projet sans fichier RENDU rempli ne recevra pas de note.**
+
+Date limite: 29 octobre 2021, 23h59
+
+Identité
+--------
+Nombre de binôme: **à remplir**
+Nom, prénom 1: **à remplir**
+Nom, prénom 2: **à remplir**
+
+
+Questions sur votre code
+------------------------
+0. Avez-vous testé que `make dpll` s'exécute sans erreurs ou warnings,
+   et que ensuite `./dpll sudoku-4x4.cnf` donne la réponse attendue (voir
+   fichier README) ?
+
+**à remplir**
+
+---
+
+1. Avez-vous utilisé la fonction `filter_map` (donné dans dpll.ml)
+   dans votre implémentation de `simplifie` ? 
+   - Si oui, expliquez en quelques phrases en français comment vous
+     l'avez utilisée.
+   - Si non, expliquez en quelques phrases en français comment
+     fonctionne votre implémentation de `simplifie`.
+
+**à remplir**
+
+---
+
+2. Pour l'implémentation de `unitaire`, quelles sont les fonctions
+   auxiliaires que vous avez utilisées et/ou écrites ? (Par une
+   fonction auxiliaire, on entend ici soit une fonction d'une
+   bibliothèque, par exemple des fonctions comme `List.length`,
+   `List.rev_append`, ou une fonction `aux_unitaire` que vous avez
+   écrite vous-mêmes.) Expliquez en quelques phrases en français
+   comment ces fonctions auxiliaires sont utilisées dans votre
+   implémentation de la fonction `unitaire`.
+
+**à remplir**
+
+---
+
+3. Pour l'implémentation de `pur`, quelles sont les fonctions
+   auxiliaires que vous avez utilisées et/ou écrites ?  Expliquez en
+   quelques phrases en français comment ces fonctions auxiliaires sont
+   utilisées dans votre implémentation de la fonction `pur`.
+
+**à remplir**
+
+---
+
+4. Donnez un exemple d'une formule pour laquelle les deux fonctions
+   `solveur_split` et `solveur_dpll_rec` ont un comportement
+   différent, et expliquez les différences entre ces deux fonctions.
+
+**à remplir**
+
+---
+
+5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
+
+**à remplir**
+
+---
+
+--fin du fichier RENDU--
