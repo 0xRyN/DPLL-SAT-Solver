@@ -116,8 +116,10 @@ let coloriage =
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses =
-  (* à compléter *)
-  []
+  filter_map (fun clause -> 
+      if List.mem i clause then None
+      else Some(clause)
+    ) clauses
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -137,8 +139,8 @@ let rec solveur_split clauses interpretation =
     | _ -> branche
 
 (* tests *)
-(* let () = print_modele (solveur_split systeme []) *)
-(* let () = print_modele (solveur_split coloriage []) *)
+(*let () = print_modele (solveur_split systeme []) *)
+let () = print_modele (solveur_split coloriage [])
 
 (* solveur dpll récursif *)
 
@@ -172,7 +174,9 @@ let rec solveur_dpll_rec clauses interpretation =
   None
 
 (* tests *)
-let () = print_int(pur (getLiterals systeme))
+(*let () = let a = simplifie 1 systeme in
+  List.iter (fun l -> print_int l) a*)
+
 (*let () = print_modele (solveur_dpll_rec systeme []) *)
 (* let () = print_modele (solveur_dpll_rec coloriage []) *)
 
