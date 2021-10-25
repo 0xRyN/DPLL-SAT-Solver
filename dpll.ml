@@ -32,7 +32,9 @@ let print_modele : int list option -> unit = function
 
 (* Util - Prints an Integer list *)
 let printList l = 
-  List.iter (fun v -> print_int v) l
+  List.iter (fun v -> print_int v; print_string " ") l;
+  print_string "\n"
+
 
 (* Util - Flattens an array of arrays, removing duplicates *)
 let getLiterals l =
@@ -118,7 +120,8 @@ let coloriage =
 let simplifie i clauses =
   filter_map (fun clause -> 
       if List.mem i clause then None
-      else Some(clause)
+      else if clause = [] then None
+      else Some(filter_map (fun x -> if x = -i then None else Some(x)) clause)
     ) clauses
 
 (* solveur_split : int list list -> int list -> int list option
@@ -140,7 +143,7 @@ let rec solveur_split clauses interpretation =
 
 (* tests *)
 (*let () = print_modele (solveur_split systeme []) *)
-let () = print_modele (solveur_split coloriage [])
+(*let () = print_modele (solveur_split exemple_7_2 [])*)
 
 (* solveur dpll récursif *)
 
@@ -151,8 +154,8 @@ let () = print_modele (solveur_split coloriage [])
 
 let rec unitaire clauses =
   match clauses with
-  | [] -> failwith "Not found"
-  | h :: t -> if List.length h <= 1 then List.hd h else unitaire t
+  | h :: t -> if List.length h = 1 then let () = printList h in List.hd h else unitaire t
+  | _ -> failwith "error"
 
 (* pur : int list list -> int
    - si `clauses' contient au moins un littéral pur, retourne
@@ -166,20 +169,24 @@ let pur clauses =
     | [] -> failwith "Failure :pas de littéral pur"
     | h :: t -> if List.mem (-h) original then aux original t else h
   in
-  aux clauses clauses
+  aux (getLiterals clauses) (getLiterals clauses)
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-  (* à compléter *)
-  None
+  (* D'abord, on supprime les clauses unitaires *)
+  try
+    solveur_dpll_rec (simplifie (pur clauses) (clauses)) interpretation
+  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) interpretation
+    with | _ -> solveur_split clauses interpretation
+
 
 (* tests *)
 (*let () = let a = simplifie 1 systeme in
   List.iter (fun l -> print_int l) a*)
 
 (*let () = print_modele (solveur_dpll_rec systeme []) *)
-(* let () = print_modele (solveur_dpll_rec coloriage []) *)
+(*let () = print_modele (solveur_dpll_rec coloriage []) *)
 
-(*let () =
+let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
-  print_modele (solveur_dpll_rec clauses [])*)
+  print_modele (solveur_dpll_rec clauses [])
