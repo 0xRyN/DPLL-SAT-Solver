@@ -147,9 +147,10 @@ let rec solveur_split clauses interpretation =
       le littéral de cette clause unitaire ;
    - sinon, lève une exception `Not_found' *)
 
-let unitaire clauses =
-  (* à compléter *)
-  0
+let rec unitaire clauses =
+  match clauses with
+  | [] -> failwith "Not found"
+  | h :: t -> if List.length h <= 1 then List.hd h else unitaire t
 
 (* pur : int list list -> int
    - si `clauses' contient au moins un littéral pur, retourne
