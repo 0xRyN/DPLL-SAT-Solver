@@ -35,6 +35,9 @@ let printList l =
   List.iter (fun v -> print_int v; print_string " ") l;
   print_string "\n"
 
+let printLList l =
+  List.iter (fun v -> printList v) l;
+  print_string "-------------\n"
 
 (* Util - Flattens an array of arrays, removing duplicates *)
 let getLiterals l =
@@ -124,6 +127,7 @@ let simplifie i clauses =
       else Some(filter_map (fun x -> if x = -i then None else Some(x)) clause)
     ) clauses
 
+
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
 (* cette fonction ne doit pas être modifiée, sauf si vous changez
@@ -154,7 +158,7 @@ let rec solveur_split clauses interpretation =
 
 let rec unitaire clauses =
   match clauses with
-  | h :: t -> if List.length h = 1 then let () = printList h in List.hd h else unitaire t
+  | h :: t -> if List.length h = 1 then List.hd h else unitaire t
   | _ -> failwith "error"
 
 (* pur : int list list -> int
@@ -175,8 +179,8 @@ let pur clauses =
 let rec solveur_dpll_rec clauses interpretation =
   (* D'abord, on supprime les clauses unitaires *)
   try
-    solveur_dpll_rec (simplifie (pur clauses) (clauses)) interpretation
-  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) interpretation
+    solveur_dpll_rec (simplifie (pur clauses) (clauses)) ((pur clauses)::interpretation)
+  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) ((unitaire clauses)::interpretation)
     with | _ -> solveur_split clauses interpretation
 
 
@@ -185,7 +189,7 @@ let rec solveur_dpll_rec clauses interpretation =
   List.iter (fun l -> print_int l) a*)
 
 (*let () = print_modele (solveur_dpll_rec systeme []) *)
-(*let () = print_modele (solveur_dpll_rec coloriage []) *)
+(*let () = print_modele (solveur_dpll_rec exemple_7_8 []) *)
 
 let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
