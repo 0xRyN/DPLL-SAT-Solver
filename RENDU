@@ -6,15 +6,14 @@
 
 Date limite: 29 octobre 2021, 23h59
 
-Identité
---------
+## Identité
+
 Nombre de binôme: 12
 Nom, prénom 1: AL AZAWI Rayan
 Nom, prénom 2: SIMONEAU Louis-Alexei
 
+## Questions sur votre code
 
-Questions sur votre code
-------------------------
 0. Avez-vous testé que `make dpll` s'exécute sans erreurs ou warnings,
    et que ensuite `./dpll sudoku-4x4.cnf` donne la réponse attendue (voir
    fichier README) ?
@@ -24,11 +23,11 @@ Oui. Make s'éxécute sans erreurs ou warnings, et ./dpll sudoku-4x4.cnf donne l
 ---
 
 1. Avez-vous utilisé la fonction `filter_map` (donné dans dpll.ml)
-   dans votre implémentation de `simplifie` ? 
-   - Si oui, expliquez en quelques phrases en français comment vous
-     l'avez utilisée.
-   - Si non, expliquez en quelques phrases en français comment
-     fonctionne votre implémentation de `simplifie`.
+   dans votre implémentation de `simplifie` ?
+    - Si oui, expliquez en quelques phrases en français comment vous
+      l'avez utilisée.
+    - Si non, expliquez en quelques phrases en français comment
+      fonctionne votre implémentation de `simplifie`.
 
 Oui. Filter_map à été utilisé pour simplifier la liste clauses et les sous listes dans clauses:
 
@@ -45,8 +44,6 @@ Oui. Filter_map à été utilisé pour simplifier la liste clauses et les sous l
     (En effet, si i est vrai, -i est faux, et n'aura donc aucun impact sur une clause CNF - car elle est composée uniquement de OU logiques)
 
     Exemple : Soit la clause (A v B v -C). Mettons C = True. Alors, quelque soient les interprétations de A et de B, A v B v -C <=> A v B
-
-    
 
 ---
 
@@ -69,19 +66,17 @@ Nous avons utilisé des fonctions auxiliaires pour la fonction unitaire :
 ---
 
 3. Pour l'implémentation de `pur`, quelles sont les fonctions
-   auxiliaires que vous avez utilisées et/ou écrites ?  Expliquez en
+   auxiliaires que vous avez utilisées et/ou écrites ? Expliquez en
    quelques phrases en français comment ces fonctions auxiliaires sont
    utilisées dans votre implémentation de la fonction `pur`.
 
 Nous avons utilisé des fonctions auxiliaires pour la fonction pur :
-    
-    -List.concat : Pour simplifier l'implémentation de la fonction pur, nous avons applati toutes les sous listes de 'clauses' en une seule liste avec List.concat.
 
-    -List.sort_uniq : La prochaine étape est de supprimer les doublons (en triant la liste, les doublons sont côte à côte). C'est ce que fait la fonction List.sort_uniq.
+    -List.flatten : Pour simplifier l'implémentation de la fonction pur, nous avons applati toutes les sous listes de 'clauses' en une seule liste avec List.flatten.
 
     -function aux original acc : fonction que nous avons écrite contenant un accumulateur et la liste originale pour permettre la récursivité terminale de pur. Fonction interne à pur.
 
-    -List.mem : dès qu'on a une liste applatie sans doublons de tous les littéraux, il suffit de vérifier, pour tout littéral i, si son opposé -i existe dans la liste. Si il n'existe pas, alors il est pur. List.mem permet de vérifier si une valeur est dans une liste.
+    -List.mem : dès qu'on a une liste applatie de tous les littéraux, il suffit de vérifier, pour tout littéral i, si son opposé -i existe dans la liste. Si il n'existe pas, alors il est pur. List.mem permet de vérifier si une valeur est dans une liste.
 
 ---
 
@@ -91,45 +86,44 @@ Nous avons utilisé des fonctions auxiliaires pour la fonction pur :
 
 Pour l'exemple_7_2 = [ [ 1; -1; -3 ]; [ -2; 3 ]; [ -2 ] ] :
 
-    I/ Littéraux purs
-    -solveur_split ne va pas reconnaitre le littéral pur -2.
-
-    -solveur_dpll_rec reconnaitra le littéral pur -2, et simplifiera la liste (simplifie -2):
-    [ [ 1; -1; -3 ]; [ -2; 3 ]; [ -2 ] ] ==> [ [ 1; -1; -3 ] ]
-
-    II/ Clauses unitaires
+    I/ Clauses unitaires
     -solveur_split ne va pas reconnaitre la clause unitaire [ -2 ]
 
     --solveur_dpll_rec reconnaitra la clause unitaire [ -2 ], et simplifiera la liste (simplifie -2):
     [ [ 1; -1; -3 ]; [ -2; 3 ]; [ -2 ] ] ==> [ [ 1; -1; -3 ] ]
 
-De I et II on conclut que les différences entre ces deux fonctions sont : 
+    II/ Littéraux purs
+    -solveur_split ne va pas reconnaitre le littéral pur -2.
 
-    -L'identification et la simplification des littéraux purs
+    -solveur_dpll_rec reconnaitra le littéral pur -2, et simplifiera la liste (simplifie -2):
+    [ [ 1; -1; -3 ]; [ -2; 3 ]; [ -2 ] ] ==> [ [ 1; -1; -3 ] ]
+
+De I et II on conclut que les différences entre ces deux fonctions sont :
 
     -L'identification et la simplification des clauses unitaires
 
-Et cela à pour effet d'implémenter un algorithme DPLL dans la fonction solveur_dpll_rec
----
+    -L'identification et la simplification des littéraux purs
+
+## Et cela à pour effet d'implémenter un algorithme DPLL dans la fonction solveur_dpll_rec
 
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
 Nous avons aussi implémenté deux fonctions utilitaires permettant le debugging du programme si besoin :
-    
+
     -function printList l : Prend une liste de int en argument et affiche la liste sur le terminal.
 
     printList [ [ 1; -2; 3 ] ] affichera sur le terminal :
 
     1 -2 3
-    
+
     -function printLList l : Prend une liste de liste de int en argument et affiche la liste sur le terminal.
 
     printLList [ [ 1; -2; 3 ]; [ 1; -3 ]; [ 2; 3 ]; [ 1; -2 ] ] affichera sur le terminal :
 
-    1 -2 3 
-    1 -3 
-    2 3 
-    1 -2 
+    1 -2 3
+    1 -3
+    2 3
+    1 -2
 
 ---
 

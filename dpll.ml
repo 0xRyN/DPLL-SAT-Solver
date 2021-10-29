@@ -40,10 +40,6 @@ let printLList l =
   List.iter (fun v -> printList v) l;
   print_string "-------------\n"
 
-(* Util - Flattens, and remove duplicates of an List of Lists *)
-let getLiterals l =
-  List.sort_uniq (fun x y -> if x > y then 1 else if x = y then 0 else -1 )(List.concat l)
-
 (* ensembles de clauses de test *)
 let exemple_3_12 =
   [ [ 1; 2; -3 ]; [ 2; 3 ]; [ -1; -2; 3 ]; [ -1; -3 ]; [ 1; -2 ] ]
@@ -122,7 +118,7 @@ let coloriage =
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses =
-(* D'abord, on supprime les clauses contenant i *)
+  (* D'abord, on supprime les clauses contenant i *)
   filter_map (fun clause -> 
       if List.mem i clause then None
       else if clause = [] then None
@@ -170,22 +166,23 @@ let rec unitaire clauses =
 
 let pur clauses = 
   (* à compléter *)
-  let rec aux original acc =
-    match acc with
-    | [] -> failwith "Failure :pas de littéral pur" 
-    (* Si sur la liste aplatie, l'opposé de l'actuel est présent, on réappelle récursivement et on cherche. Sinon, on retourne le littéral pur *)
-    | h :: t -> if List.mem (-h) original then aux original t else h in
-  aux (getLiterals clauses) (getLiterals clauses) (* D'abord, on aplatit, trie et on supprime les doublons *)
+  let flat = List.flatten clauses in
+  let rec aux org acc = 
+    match acc with 
+    | [] -> failwith "No pure here... sad"
+    | h :: t -> if List.mem (-h) org then h else aux org t 
+
+  in aux flat flat
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-  (* D'abord, on supprime les littéraux purs (car l'opération peut former des clauses unitaires) *)
+  (* D'abord, on supprime les littéraux unitaire (simplifie la tache pour pur) *)
   try
-   (* Si l'opération réussit, on simplifie les clauses, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
-    solveur_dpll_rec (simplifie (pur clauses) (clauses)) ((pur clauses)::interpretation)
-    (* L'opération n'a pas réussi <-> plus de littéraux purs, on vérifie les clauses unitaires, simplifie et, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
-  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) ((unitaire clauses)::interpretation) (¨¨)
-  (* L'opération n'a pas réussi <-> plus de clauses unitaires NI de littéraux purs. On peut maintenant appeler solveur_split *)
+    (* Si l'opération réussit, on simplifie les clauses, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
+    solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) ((unitaire clauses)::interpretation)
+  (* L'opération n'a pas réussi <-> plus de clauses unitaires, on vérifie les littéraux purs, simplifie et, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
+  with | _ -> try solveur_dpll_rec (simplifie (pur clauses) (clauses)) ((pur clauses)::interpretation)
+    (* L'opération n'a pas réussi <-> plus de clauses unitaires NI de littéraux purs. On peut maintenant appeler solveur_split *)
     with | _ -> solveur_split clauses interpretation
 
 
