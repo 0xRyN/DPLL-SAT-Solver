@@ -104,9 +104,16 @@ De I et II on conclut que les différences entre ces deux fonctions sont :
 
     -L'identification et la simplification des littéraux purs
 
-## Et cela à pour effet d'implémenter un algorithme DPLL dans la fonction solveur_dpll_rec
+Et cela à pour effet d'implémenter un vrai algorithme DPLL dans la fonction solveur_dpll_rec
 
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
+
+BENCHMARKS
+
+$ time ./dpll sudoku-9x9-god.cnf  
+SAT
+
+0.65s user 0.14s system 99% cpu 0.787 total
 
 Nous avons aussi implémenté deux fonctions utilitaires permettant le debugging du programme si besoin :
 
