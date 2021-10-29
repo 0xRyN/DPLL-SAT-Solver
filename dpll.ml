@@ -35,11 +35,12 @@ let printList l =
   List.iter (fun v -> print_int v; print_string " ") l;
   print_string "\n"
 
+(* Util - Prints an Integer List of Lists *)
 let printLList l =
   List.iter (fun v -> printList v) l;
   print_string "-------------\n"
 
-(* Util - Flattens an array of arrays, removing duplicates *)
+(* Util - Flattens, and remove duplicates of an List of Lists *)
 let getLiterals l =
   List.sort_uniq (fun x y -> if x > y then 1 else if x = y then 0 else -1 )(List.concat l)
 
@@ -121,10 +122,11 @@ let coloriage =
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses =
+(* D'abord, on supprime les clauses contenant i *)
   filter_map (fun clause -> 
       if List.mem i clause then None
       else if clause = [] then None
-      else Some(filter_map (fun x -> if x = -i then None else Some(x)) clause)
+      else Some(filter_map (fun x -> if x = -i then None else Some(x)) clause) (* Ensuite, on supprime le -i dans les sous clauses le contenant *)
     ) clauses
 
 
@@ -158,7 +160,7 @@ let rec solveur_split clauses interpretation =
 
 let rec unitaire clauses =
   match clauses with
-  | h :: t -> if List.length h = 1 then List.hd h else unitaire t
+  | h :: t -> if List.length h = 1 then List.hd h else unitaire t (* Si la sous liste est de taille 1, alors la clause est unitaire *)
   | _ -> failwith "error"
 
 (* pur : int list list -> int
@@ -170,17 +172,20 @@ let pur clauses =
   (* à compléter *)
   let rec aux original acc =
     match acc with
-    | [] -> failwith "Failure :pas de littéral pur"
-    | h :: t -> if List.mem (-h) original then aux original t else h
-  in
-  aux (getLiterals clauses) (getLiterals clauses)
+    | [] -> failwith "Failure :pas de littéral pur" 
+    (* Si sur la liste aplatie, l'opposé de l'actuel est présent, on réappelle récursivement et on cherche. Sinon, on retourne le littéral pur *)
+    | h :: t -> if List.mem (-h) original then aux original t else h in
+  aux (getLiterals clauses) (getLiterals clauses) (* D'abord, on aplatit, trie et on supprime les doublons *)
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-  (* D'abord, on supprime les clauses unitaires *)
+  (* D'abord, on supprime les littéraux purs (car l'opération peut former des clauses unitaires) *)
   try
+   (* Si l'opération réussit, on simplifie les clauses, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
     solveur_dpll_rec (simplifie (pur clauses) (clauses)) ((pur clauses)::interpretation)
-  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) ((unitaire clauses)::interpretation)
+    (* L'opération n'a pas réussi <-> plus de littéraux purs, on vérifie les clauses unitaires, simplifie et, on stocke l'interpétation prise et on rappelle solveur_dpll_rec *)
+  with | _ -> try solveur_dpll_rec (simplifie (unitaire clauses) (clauses)) ((unitaire clauses)::interpretation) (¨¨)
+  (* L'opération n'a pas réussi <-> plus de clauses unitaires NI de littéraux purs. On peut maintenant appeler solveur_split *)
     with | _ -> solveur_split clauses interpretation
 
 
